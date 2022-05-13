@@ -1,0 +1,28 @@
+[app]
+name = ""
+port = ""
+key = ""
+url = ""
+
+[database]
+driver = ""
+host = ""
+port = ""
+username = ""
+password = ""
+name = ""
+
+[log]
+driver = ""
+host = ""
+port = ""
+username = ""
+password = ""
+name = ""
+
+[mail]
+host = ""
+port = ""
+sender = ""
+username = ""
+password = ""
