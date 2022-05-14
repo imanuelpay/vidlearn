@@ -1,0 +1,1290 @@
+basePath: /api
+definitions:
+  common.DefaultDataResponse:
+    properties:
+      data: {}
+      message:
+        type: string
+    type: object
+  request.CreateCategoryRequest:
+    properties:
+      image_url:
+        type: string
+      name:
+        type: string
+    type: object
+  request.CreatePlaylistRequest:
+    properties:
+      category_id:
+        type: integer
+      description:
+        type: string
+      level:
+        type: string
+      name:
+        type: string
+      thumbnail_url:
+        type: string
+    type: object
+  request.CreatePlaylistToolRequest:
+    properties:
+      tool_id:
+        type: integer
+    type: object
+  request.CreateToolRequest:
+    properties:
+      image_url:
+        type: string
+      name:
+        type: string
+      tool_url:
+        type: string
+    type: object
+  request.CreateVideoRequest:
+    properties:
+      description:
+        type: string
+      playlist_id:
+        type: integer
+      title:
+        type: string
+      video_url:
+        type: string
+    type: object
+  request.ForgotPasswordRequest:
+    properties:
+      email:
+        type: string
+    type: object
+  request.LoginUserRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  request.RegisterUserRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    type: object
+  request.ResetPasswordRequest:
+    properties:
+      confirm_password:
+        type: string
+      new_password:
+        type: string
+    type: object
+  request.UpdatePasswordRequest:
+    properties:
+      confirm_password:
+        type: string
+      new_password:
+        type: string
+      old_password:
+        type: string
+    type: object
+  request.UpdateUserRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      role:
+        type: integer
+    type: object
+  response.GetCategoryByIDResponse:
+    properties:
+      id:
+        type: integer
+      image_url:
+        type: string
+      name:
+        type: string
+    type: object
+  response.GetPlaylistByIDResponse:
+    properties:
+      category:
+        properties:
+          id:
+            type: integer
+          image_url:
+            type: string
+          name:
+            type: string
+        type: object
+      created_at:
+        type: string
+      created_by:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      level:
+        type: string
+      name:
+        type: string
+      thumbnail_url:
+        type: string
+      updated_at:
+        type: string
+      updated_by:
+        type: string
+    type: object
+  response.GetPlaylistsByTool:
+    properties:
+      image_url:
+        type: string
+      name:
+        type: string
+      playlists:
+        items:
+          $ref: '#/definitions/vidlearn-final-projcect_api_v1_playlist_tool_response.Playlist'
+        type: array
+      tool_id:
+        type: integer
+      tool_url:
+        type: string
+    type: object
+  response.GetToolByIDResponse:
+    properties:
+      id:
+        type: integer
+      image_url:
+        type: string
+      name:
+        type: string
+      tool_url:
+        type: string
+    type: object
+  response.GetToolsByPlaylist:
+    properties:
+      category_id:
+        type: integer
+      created_at:
+        type: string
+      created_by:
+        type: string
+      description:
+        type: string
+      level:
+        type: string
+      name:
+        type: string
+      playlist_id:
+        type: integer
+      thumbnail_url:
+        type: string
+      tools:
+        items:
+          $ref: '#/definitions/response.Tool'
+        type: array
+      updated_at:
+        type: string
+      updated_by:
+        type: string
+    type: object
+  response.GetToolsByPlaylistID:
+    properties:
+      category_id:
+        type: integer
+      created_at:
+        type: string
+      created_by:
+        type: string
+      description:
+        type: string
+      level:
+        type: string
+      name:
+        type: string
+      playlist_id:
+        type: integer
+      thumbnail_url:
+        type: string
+      tool:
+        $ref: '#/definitions/response.Tool'
+      updated_at:
+        type: string
+      updated_by:
+        type: string
+    type: object
+  response.GetUserByIDResponse:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      role:
+        type: integer
+      updated_at:
+        type: string
+      verified_at:
+        type: string
+    type: object
+  response.GetVideoByIDByPlaylistResponse:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      updated_at:
+        type: string
+      video_url:
+        type: string
+    type: object
+  response.LoginResponse:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      token:
+        type: string
+    type: object
+  response.RegisterResponse:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+    type: object
+  response.Tool:
+    properties:
+      image_url:
+        type: string
+      name:
+        type: string
+      tool_id:
+        type: integer
+      tool_url:
+        type: string
+    type: object
+  vidlearn-final-projcect_api_v1_playlist_tool_response.Playlist:
+    properties:
+      category_id:
+        type: integer
+      created_at:
+        type: string
+      created_by:
+        type: string
+      description:
+        type: string
+      level:
+        type: string
+      name:
+        type: string
+      playlist_id:
+        type: integer
+      thumbnail_url:
+        type: string
+      updated_at:
+        type: string
+      updated_by:
+        type: string
+    type: object
+  vidlearn-final-projcect_api_v1_video_response.Playlist:
+    properties:
+      id:
+        type: integer
+      level:
+        type: string
+      name:
+        type: string
+      thumbnail_url:
+        type: string
+      videos:
+        items:
+          $ref: '#/definitions/response.GetVideoByIDByPlaylistResponse'
+        type: array
+    type: object
+host: localhost:1224
+info:
+  contact:
+    email: support@vidlearn.com
+    name: API Support
+    url: http://vidlearn.com/
+  description: Vidlearn API Documentation.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://vidlearn.com/
+  title: Vidlearn API
+  version: "1.0"
+paths:
+  /api/v1/user:
+    get:
+      consumes:
+      - application/json
+      description: Get All Users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/response.GetUserByIDResponse'
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Users
+      tags:
+      - User
+  /api/v1/user/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete User
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetUserByIDResponse'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Delete User
+      tags:
+      - User
+    get:
+      consumes:
+      - application/json
+      description: Get User By ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetUserByIDResponse'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get User By ID
+      tags:
+      - User
+    put:
+      consumes:
+      - application/json
+      description: Update User
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update User
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetUserByIDResponse'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Update User
+      tags:
+      - User
+  /api/v1/user/{id}/password:
+    put:
+      consumes:
+      - application/json
+      description: Update Password
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update Password
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdatePasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetUserByIDResponse'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Update Password
+      tags:
+      - User
+  /v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login user.
+      parameters:
+      - description: Login User
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.LoginUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.LoginResponse'
+              type: object
+      summary: Login user
+      tags:
+      - Authentication
+  /v1/auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register user.
+      parameters:
+      - description: Register User
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.RegisterUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.RegisterResponse'
+              type: object
+      summary: Register user
+      tags:
+      - Authentication
+  /v1/category:
+    get:
+      consumes:
+      - application/json
+      description: Get All Categories.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/response.GetCategoryByIDResponse'
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Categories
+      tags:
+      - Category
+    post:
+      consumes:
+      - application/json
+      description: Create Category.
+      parameters:
+      - description: Create Category
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateCategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetCategoryByIDResponse'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Create Category
+      tags:
+      - Category
+  /v1/category/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Category.
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetCategoryByIDResponse'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Delete Category
+      tags:
+      - Category
+    get:
+      consumes:
+      - application/json
+      description: Get Category by ID.
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetCategoryByIDResponse'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get Category by ID
+      tags:
+      - Category
+    put:
+      consumes:
+      - application/json
+      description: Update Category.
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update Category
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateCategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetCategoryByIDResponse'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Update Category
+      tags:
+      - Category
+  /v1/forgot-password:
+    post:
+      consumes:
+      - application/json
+      description: Forgot Password user.
+      parameters:
+      - description: Forgot Password
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.ForgotPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.DefaultDataResponse'
+      summary: Forgot Password user
+      tags:
+      - Authentication
+  /v1/playlist:
+    get:
+      consumes:
+      - application/json
+      description: Get All Playlists.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/response.GetPlaylistByIDResponse'
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Playlists
+      tags:
+      - Playlist
+    post:
+      consumes:
+      - application/json
+      description: Create Playlist.
+      parameters:
+      - description: Create Playlist
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreatePlaylistRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetPlaylistByIDResponse'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Create Playlist
+      tags:
+      - Playlist
+  /v1/playlist/{id_playlist}/tool/{id_tool}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Playlist Tool
+      parameters:
+      - description: Playlist ID
+        in: path
+        name: id_playlist
+        required: true
+        type: string
+      - description: Tool ID
+        in: path
+        name: id_tool
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetToolsByPlaylistID'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Delete Playlist Tool
+      tags:
+      - Playlist
+  /v1/playlist/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Playlist.
+      parameters:
+      - description: Playlist ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetPlaylistByIDResponse'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Delete Playlist
+      tags:
+      - Playlist
+    get:
+      consumes:
+      - application/json
+      description: Get Playlist by ID.
+      parameters:
+      - description: Playlist ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetPlaylistByIDResponse'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get Playlist by ID
+      tags:
+      - Playlist
+    put:
+      consumes:
+      - application/json
+      description: Update Playlist.
+      parameters:
+      - description: Playlist ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update Playlist
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreatePlaylistRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetPlaylistByIDResponse'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Update Playlist
+      tags:
+      - Playlist
+  /v1/playlist/{id}/tool:
+    get:
+      consumes:
+      - application/json
+      description: Get Tools by Playlist
+      parameters:
+      - description: Playlist ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetToolsByPlaylist'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get Tools by Playlist
+      tags:
+      - Playlist
+    post:
+      consumes:
+      - application/json
+      description: Create Playlist Tool
+      parameters:
+      - description: Playlist ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Create Playlist Tool
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreatePlaylistToolRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetToolsByPlaylistID'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Create Playlist Tool
+      tags:
+      - Playlist
+  /v1/reset-password/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Reset Password user.
+      parameters:
+      - description: Reset Token
+        in: path
+        name: token
+        required: true
+        type: string
+      - description: Reset Password
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.ResetPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.DefaultDataResponse'
+      summary: Reset Password user
+      tags:
+      - Authentication
+  /v1/tool:
+    get:
+      consumes:
+      - application/json
+      description: Get All Tools.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/response.GetToolByIDResponse'
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Tools
+      tags:
+      - Tool
+    post:
+      consumes:
+      - application/json
+      description: Create Tool.
+      parameters:
+      - description: Create Tool
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateToolRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetToolByIDResponse'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Create Tool
+      tags:
+      - Tool
+  /v1/tool/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Tool.
+      parameters:
+      - description: Tool ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetToolByIDResponse'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Delete Tool
+      tags:
+      - Tool
+    get:
+      consumes:
+      - application/json
+      description: Get Tool by ID.
+      parameters:
+      - description: Tool ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetToolByIDResponse'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get Tool by ID
+      tags:
+      - Tool
+    put:
+      consumes:
+      - application/json
+      description: Update Tool.
+      parameters:
+      - description: Tool ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update Tool
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateToolRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetToolByIDResponse'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Update Tool
+      tags:
+      - Tool
+  /v1/tool/{id}/playlist:
+    get:
+      consumes:
+      - application/json
+      description: Get Playlists by Tool
+      parameters:
+      - description: Tool ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetPlaylistsByTool'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get Playlists by Tool
+      tags:
+      - Tool
+  /v1/verify/{token}:
+    get:
+      consumes:
+      - application/json
+      description: Verify user.
+      parameters:
+      - description: Verify Token
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.DefaultDataResponse'
+      summary: Verify user
+      tags:
+      - Authentication
+  /v1/video:
+    post:
+      consumes:
+      - application/json
+      description: Create Video.
+      parameters:
+      - description: Create Video
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateVideoRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetVideoByIDByPlaylistResponse'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Create Video
+      tags:
+      - Video
+  /v1/video/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Video.
+      parameters:
+      - description: Video ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetVideoByIDByPlaylistResponse'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Delete Video
+      tags:
+      - Video
+    get:
+      consumes:
+      - application/json
+      description: Get Video By ID.
+      parameters:
+      - description: Video ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetVideoByIDByPlaylistResponse'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get Video By ID
+      tags:
+      - Video
+    put:
+      consumes:
+      - application/json
+      description: Update Video.
+      parameters:
+      - description: Video ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Video
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateVideoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetVideoByIDByPlaylistResponse'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Update Video
+      tags:
+      - Video
+  /v1/video/playlist/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get Video By Playlist.
+      parameters:
+      - description: Playlist ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/vidlearn-final-projcect_api_v1_video_response.Playlist'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get Video By Playlist
+      tags:
+      - Video
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
