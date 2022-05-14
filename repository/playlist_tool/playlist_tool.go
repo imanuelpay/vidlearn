@@ -51,13 +51,13 @@ func (repository *MySQLRepository) CreatePlaylistTool(playlistTool *playlist_too
 	return playlistTool, nil
 }
 
-func (repository *MySQLRepository) DeletePlaylistTool(ID int) (playlistTool *playlist_tool.PlaylistTool, err error) {
-	err = repository.db.First(&playlistTool, ID).Error
+func (repository *MySQLRepository) DeletePlaylistTool(playlistID, toolID int) (playlistTool *playlist_tool.PlaylistTool, err error) {
+	err = repository.db.Where("playlist_id=? AND tool_id=?", playlistID, toolID).First(&playlistTool).Error
 	if err != nil {
 		return nil, err
 	}
 
-	err = repository.db.Delete(&playlistTool).Error
+	err = repository.db.Where("playlist_id=? AND tool_id=?", playlistID, toolID).Delete(&playlistTool).Error
 	if err != nil {
 		return nil, err
 	}

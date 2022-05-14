@@ -10,14 +10,14 @@ type Repository interface {
 	GetToolByPlaylist(playlistID int) (playlist_tools []*PlaylistTool, err error)
 	GetPlaylistByTool(toolID int) (playlist_tools []*PlaylistTool, err error)
 	CreatePlaylistTool(playlist_tools *PlaylistTool) (*PlaylistTool, error)
-	DeletePlaylistTool(ID int) (playlist_tools *PlaylistTool, err error)
+	DeletePlaylistTool(playlistID, toolID int) (playlist_tools *PlaylistTool, err error)
 }
 
 type Service interface {
 	GetToolByPlaylist(playlistID int) (playlist_tools []*PlaylistTool, err error)
 	GetPlaylistByTool(toolID int) (playlist_tools []*PlaylistTool, err error)
-	CreatePlaylistTool(upsertPlaylistToolSpec *spec.UpsertPlaylistToolSpec) (*PlaylistTool, error)
-	DeletePlaylistTool(ID int) (playlist_tools *PlaylistTool, err error)
+	CreatePlaylistTool(upsertPlaylistToolSpec *spec.UpsertPlaylistToolSpec, PlaylistID int) (*PlaylistTool, error)
+	DeletePlaylistTool(playlistID, toolID int) (playlist_tools *PlaylistTool, err error)
 }
 
 type playlistToolService struct {
@@ -40,19 +40,19 @@ func (service *playlistToolService) GetPlaylistByTool(toolID int) (playlist_tool
 	return service.repository.GetPlaylistByTool(toolID)
 }
 
-func (service *playlistToolService) CreatePlaylistTool(upsertPlaylistToolSpec *spec.UpsertPlaylistToolSpec) (*PlaylistTool, error) {
+func (service *playlistToolService) CreatePlaylistTool(upsertPlaylistToolSpec *spec.UpsertPlaylistToolSpec, PlaylistID int) (*PlaylistTool, error) {
 	if err := service.validate.Struct(upsertPlaylistToolSpec); err != nil {
 		return nil, err
 	}
 
 	playlist_tool := NewPlaylistTool(
-		upsertPlaylistToolSpec.PlaylistID,
+		PlaylistID,
 		upsertPlaylistToolSpec.ToolID,
 	)
 
 	return service.repository.CreatePlaylistTool(playlist_tool)
 }
 
-func (service *playlistToolService) DeletePlaylistTool(ID int) (playlist_tools *PlaylistTool, err error) {
-	return service.repository.DeletePlaylistTool(ID)
+func (service *playlistToolService) DeletePlaylistTool(playlistID, toolID int) (playlist_tools *PlaylistTool, err error) {
+	return service.repository.DeletePlaylistTool(playlistID, toolID)
 }
