@@ -21,6 +21,15 @@ func CreateController(service playlistBusiness.Service) *Controller {
 	}
 }
 
+// GetAll func Get All Playlists.
+// @Description Get All Playlists.
+// @Summary Get All Playlists
+// @Tags Playlist
+// @Accept json
+// @Produce json
+// @Success 200 {object} common.DefaultDataResponse{data=[]response.GetPlaylistByIDResponse}
+// @Security ApiKeyAuth
+// @Router /v1/playlist [get]
 func (controller *Controller) GetAll(c echo.Context) error {
 	playlists, err := controller.service.GetAllPlaylist()
 	if err != nil {
@@ -39,6 +48,16 @@ func (controller *Controller) GetAll(c echo.Context) error {
 	return c.JSON(http.StatusOK, responseData)
 }
 
+// GetByID func Get Playlist by ID.
+// @Description Get Playlist by ID.
+// @Summary Get Playlist by ID
+// @Tags Playlist
+// @Accept json
+// @Produce json
+// @Param id path string true "Playlist ID"
+// @Success 200 {object} common.DefaultDataResponse{data=response.GetPlaylistByIDResponse}
+// @Security ApiKeyAuth
+// @Router /v1/playlist/{id} [get]
 func (controller *Controller) GetByID(c echo.Context) error {
 	playlistID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -62,6 +81,16 @@ func (controller *Controller) GetByID(c echo.Context) error {
 	return c.JSON(http.StatusOK, responseData)
 }
 
+// Create func for Create Playlist.
+// @Description Create Playlist.
+// @Summary Create Playlist
+// @Tags Playlist
+// @Accept json
+// @Produce json
+// @Param body body request.CreatePlaylistRequest true "Create Playlist"
+// @Success 201 {object} common.DefaultDataResponse{data=response.GetPlaylistByIDResponse}
+// @Security ApiKeyAuth
+// @Router /v1/playlist [post]
 func (controller *Controller) Create(c echo.Context) error {
 	createPlaylistRequest := new(request.CreatePlaylistRequest)
 	if err := c.Bind(createPlaylistRequest); err != nil {
@@ -90,6 +119,17 @@ func (controller *Controller) Create(c echo.Context) error {
 	return c.JSON(http.StatusCreated, responseData)
 }
 
+// Update func for Update Playlist.
+// @Description Update Playlist.
+// @Summary Update Playlist
+// @Tags Playlist
+// @Accept json
+// @Produce json
+// @Param id path string true "Playlist ID"
+// @Param body body request.CreatePlaylistRequest true "Update Playlist"
+// @Success 200 {object} common.DefaultDataResponse{data=response.GetPlaylistByIDResponse}
+// @Security ApiKeyAuth
+// @Router /v1/playlist/{id} [put]
 func (controller *Controller) Update(c echo.Context) error {
 	playlistID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -123,6 +163,16 @@ func (controller *Controller) Update(c echo.Context) error {
 	return c.JSON(http.StatusOK, responseData)
 }
 
+// Delete func for Delete Playlist.
+// @Description Delete Playlist.
+// @Summary Delete Playlist
+// @Tags Playlist
+// @Accept json
+// @Produce json
+// @Param id path string true "Playlist ID"
+// @Success 200 {object} common.DefaultDataResponse{data=response.GetPlaylistByIDResponse}
+// @Security ApiKeyAuth
+// @Router /v1/playlist/{id} [delete]
 func (controller *Controller) Delete(c echo.Context) error {
 	playlistID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

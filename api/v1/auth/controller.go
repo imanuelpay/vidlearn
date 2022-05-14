@@ -25,6 +25,15 @@ func CreateController(userService userBusiness.Service, config *config.AppConfig
 	}
 }
 
+// Login func for login user.
+// @Description Login user.
+// @Summary Login user
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param body body request.LoginUserRequest true "Login User"
+// @Success 201 {object} common.DefaultDataResponse{data=response.LoginResponse}
+// @Router /v1/auth/login [post]
 func (controller *Controller) Login(c echo.Context) error {
 	var loginUserRequest *request.LoginUserRequest
 	if err := c.Bind(&loginUserRequest); err != nil {
@@ -62,7 +71,7 @@ func (controller *Controller) Login(c echo.Context) error {
 		})
 	}
 
-	response := response.CreateLoginResponse(user.ID, user.Name, user.Email, jwt)
+	response := response.CreateLoginResponse(user.Name, user.Email, jwt)
 	responseData := common.DefaultDataResponse{
 		Message: "Login successfully",
 		Data:    response,
@@ -71,6 +80,15 @@ func (controller *Controller) Login(c echo.Context) error {
 	return c.JSON(http.StatusCreated, responseData)
 }
 
+// Register func for register user.
+// @Description Register user.
+// @Summary Register user
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param body body request.RegisterUserRequest true "Register User"
+// @Success 201 {object} common.DefaultDataResponse{data=response.RegisterResponse}
+// @Router /v1/auth/register [post]
 func (controller *Controller) Register(c echo.Context) error {
 	var registerUserRequest *request.RegisterUserRequest
 	if err := c.Bind(&registerUserRequest); err != nil {
@@ -99,6 +117,15 @@ func (controller *Controller) Register(c echo.Context) error {
 	return c.JSON(http.StatusCreated, responseData)
 }
 
+// Verify func for register user.
+// @Description Verify user.
+// @Summary Verify user
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param token path string true "Verify Token"
+// @Success 200 {object} common.DefaultDataResponse
+// @Router /v1/verify/{token} [get]
 func (controller *Controller) Verify(c echo.Context) error {
 	verifyCode := c.Param("token")
 	if verifyCode == "" {
@@ -122,6 +149,15 @@ func (controller *Controller) Verify(c echo.Context) error {
 	})
 }
 
+// ForgotPassword func for Forgot Password user.
+// @Description Forgot Password user.
+// @Summary Forgot Password user
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param body body request.ForgotPasswordRequest true "Forgot Password"
+// @Success 200 {object} common.DefaultDataResponse
+// @Router /v1/forgot-password [post]
 func (controller *Controller) ForgotPassword(c echo.Context) error {
 	var forgotPasswordRequest *request.ForgotPasswordRequest
 
@@ -148,6 +184,16 @@ func (controller *Controller) ForgotPassword(c echo.Context) error {
 	})
 }
 
+// ResetPassword func for Reset Password user.
+// @Description Reset Password user.
+// @Summary Reset Password user
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param token path string true "Reset Token"
+// @Param body body request.ResetPasswordRequest true "Reset Password"
+// @Success 200 {object} common.DefaultDataResponse
+// @Router /v1/reset-password/{token} [POST]
 func (controller *Controller) ResetPassword(c echo.Context) error {
 	verifyCode := c.Param("token")
 	if verifyCode == "" {

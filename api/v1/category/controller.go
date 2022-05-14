@@ -21,6 +21,15 @@ func CreateController(service categoryBusiness.Service) *Controller {
 	}
 }
 
+// GetAll func Get All Categories.
+// @Description Get All Categories.
+// @Summary Get All Categories
+// @Tags Category
+// @Accept json
+// @Produce json
+// @Success 200 {object} common.DefaultDataResponse{data=[]response.GetCategoryByIDResponse}
+// @Security ApiKeyAuth
+// @Router /v1/category [get]
 func (controller *Controller) GetAll(c echo.Context) error {
 	categories, err := controller.service.GetAllCategory()
 	if err != nil {
@@ -39,6 +48,16 @@ func (controller *Controller) GetAll(c echo.Context) error {
 	return c.JSON(http.StatusOK, responseData)
 }
 
+// GetByID func Get Category by ID.
+// @Description Get Category by ID.
+// @Summary Get Category by ID
+// @Tags Category
+// @Accept json
+// @Produce json
+// @Param id path string true "Category ID"
+// @Success 200 {object} common.DefaultDataResponse{data=response.GetCategoryByIDResponse}
+// @Security ApiKeyAuth
+// @Router /v1/category/{id} [get]
 func (controller *Controller) GetByID(c echo.Context) error {
 	categoryID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -62,6 +81,16 @@ func (controller *Controller) GetByID(c echo.Context) error {
 	return c.JSON(http.StatusOK, responseData)
 }
 
+// Create func for Create Category.
+// @Description Create Category.
+// @Summary Create Category
+// @Tags Category
+// @Accept json
+// @Produce json
+// @Param body body request.CreateCategoryRequest true "Create Category"
+// @Success 201 {object} common.DefaultDataResponse{data=response.GetCategoryByIDResponse}
+// @Security ApiKeyAuth
+// @Router /v1/category [post]
 func (controller *Controller) Create(c echo.Context) error {
 	createCategoryRequest := new(request.CreateCategoryRequest)
 	if err := c.Bind(createCategoryRequest); err != nil {
@@ -87,6 +116,17 @@ func (controller *Controller) Create(c echo.Context) error {
 	return c.JSON(http.StatusCreated, responseData)
 }
 
+// Update func for Update Category.
+// @Description Update Category.
+// @Summary Update Category
+// @Tags Category
+// @Accept json
+// @Produce json
+// @Param id path string true "Category ID"
+// @Param body body request.CreateCategoryRequest true "Update Category"
+// @Success 200 {object} common.DefaultDataResponse{data=response.GetCategoryByIDResponse}
+// @Security ApiKeyAuth
+// @Router /v1/category/{id} [put]
 func (controller *Controller) Update(c echo.Context) error {
 	categoryID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -117,6 +157,16 @@ func (controller *Controller) Update(c echo.Context) error {
 	return c.JSON(http.StatusOK, responseData)
 }
 
+// Delete func for Delete Category.
+// @Description Delete Category.
+// @Summary Delete Category
+// @Tags Category
+// @Accept json
+// @Produce json
+// @Param id path string true "Category ID"
+// @Success 200 {object} common.DefaultDataResponse{data=response.GetCategoryByIDResponse}
+// @Security ApiKeyAuth
+// @Router /v1/category/{id} [delete]
 func (controller *Controller) Delete(c echo.Context) error {
 	categoryID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

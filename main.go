@@ -14,10 +14,25 @@ import (
 	"vidlearn-final-projcect/util"
 
 	"github.com/labstack/echo/v4"
+	echoMiddleware "github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
 	_ "github.com/swaggo/echo-swagger/example/docs"
 )
 
+// @title Vidlearn API
+// @version 1.0
+// @description Vidlearn API Documentation.
+// @termsOfService http://vidlearn.com/
+// @contact.name API Support
+// @contact.url http://vidlearn.com/
+// @contact.email support@vidlearn.com
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
+// @host localhost:1224
+// @BasePath /api
 func main() {
 	config := config.GetConfig()
 
@@ -29,6 +44,9 @@ func main() {
 	controllers := modules.RegisterModules(dbCon, config)
 
 	e := echo.New()
+	e.Pre(echoMiddleware.RemoveTrailingSlash())
+
+	e.Use(echoMiddleware.CORS())
 	middleware.Logger(e, dbLog)
 	e.HTTPErrorHandler = middleware.ErrorHandler
 	e.HideBanner = true

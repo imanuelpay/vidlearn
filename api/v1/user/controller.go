@@ -21,6 +21,15 @@ func CreateController(service userBusiness.Service) *Controller {
 	}
 }
 
+// GetAll func Get All Users
+// @Description Get All Users
+// @Summary Get All Users
+// @Tags User
+// @Accept json
+// @Produce json
+// @Success 200 {object} common.DefaultDataResponse{data=[]response.GetUserByIDResponse}
+// @Security ApiKeyAuth
+// @Router /api/v1/user [get]
 func (controller *Controller) GetAll(c echo.Context) error {
 	users, err := controller.service.GetAllUser()
 	if err != nil {
@@ -39,6 +48,16 @@ func (controller *Controller) GetAll(c echo.Context) error {
 	return c.JSON(http.StatusOK, responseData)
 }
 
+// GetByID func Get User By ID
+// @Description Get User By ID
+// @Summary Get User By ID
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200 {object} common.DefaultDataResponse{data=response.GetUserByIDResponse}
+// @Security ApiKeyAuth
+// @Router /api/v1/user/{id} [get]
 func (controller *Controller) GetByID(c echo.Context) error {
 	userID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -65,6 +84,17 @@ func (controller *Controller) GetByID(c echo.Context) error {
 	return c.JSON(http.StatusOK, responseData)
 }
 
+// Update func Update User
+// @Description Update User
+// @Summary Update User
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Param body body request.UpdateUserRequest true "Update User"
+// @Success 200 {object} common.DefaultDataResponse{data=response.GetUserByIDResponse}
+// @Security ApiKeyAuth
+// @Router /api/v1/user/{id} [put]
 func (controller *Controller) Update(c echo.Context) error {
 	userID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -101,6 +131,17 @@ func (controller *Controller) Update(c echo.Context) error {
 	return c.JSON(http.StatusOK, responseData)
 }
 
+// UpdatePassword func Update Password
+// @Description Update Password
+// @Summary Update Password
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Param body body request.UpdatePasswordRequest true "Update Password"
+// @Success 200 {object} common.DefaultDataResponse{data=response.GetUserByIDResponse}
+// @Security ApiKeyAuth
+// @Router /api/v1/user/{id}/password [put]
 func (controller *Controller) UpdatePassword(c echo.Context) error {
 	userID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -137,6 +178,16 @@ func (controller *Controller) UpdatePassword(c echo.Context) error {
 	return c.JSON(http.StatusOK, responseData)
 }
 
+// Delete func Delete User
+// @Description Delete User
+// @Summary Delete User
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200 {object} common.DefaultDataResponse{data=response.GetUserByIDResponse}
+// @Security ApiKeyAuth
+// @Router /api/v1/user/{id} [delete]
 func (controller *Controller) Delete(c echo.Context) error {
 	userID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
