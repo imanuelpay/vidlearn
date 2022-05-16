@@ -131,7 +131,7 @@ func (service *userService) ResetPassword(upsertUserResetPasswordSpec *spec.Upse
 		return nil, err
 	}
 
-	if user.IsReset == 0 {
+	if user.IsReset == 99 {
 		return nil, errors.New("User is not reset")
 	}
 
@@ -142,7 +142,7 @@ func (service *userService) ResetPassword(upsertUserResetPasswordSpec *spec.Upse
 
 	user.Password = passwordHash
 	user.VerifyCode = " "
-	user.IsReset = 0
+	user.IsReset = 99
 	user.UpdatedAt = time.Now()
 
 	userData, err := service.repository.UpdateUser(user, user.ID)
@@ -186,6 +186,10 @@ func (service *userService) GetUserByEmailAndPassword(upsertUserLoginSpec *spec.
 	time := time.Time{}
 	if user.VerifiedAt == time {
 		return nil, errors.New("user not verified")
+	}
+
+	if user.IsReset == 1 {
+		return nil, errors.New("user is reset")
 	}
 
 	isTrue, err := util.CheckPasswordHash(upsertUserLoginSpec.Password, user.Password)

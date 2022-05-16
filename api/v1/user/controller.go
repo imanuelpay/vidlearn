@@ -29,7 +29,7 @@ func CreateController(service userBusiness.Service) *Controller {
 // @Produce json
 // @Success 200 {object} common.DefaultDataResponse{data=[]response.GetUserByIDResponse}
 // @Security ApiKeyAuth
-// @Router /api/v1/user [get]
+// @Router /v1/user [get]
 func (controller *Controller) GetAll(c echo.Context) error {
 	users, err := controller.service.GetAllUser()
 	if err != nil {
@@ -57,7 +57,7 @@ func (controller *Controller) GetAll(c echo.Context) error {
 // @Param id path int true "User ID"
 // @Success 200 {object} common.DefaultDataResponse{data=response.GetUserByIDResponse}
 // @Security ApiKeyAuth
-// @Router /api/v1/user/{id} [get]
+// @Router /v1/user/{id} [get]
 func (controller *Controller) GetByID(c echo.Context) error {
 	userID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -94,7 +94,7 @@ func (controller *Controller) GetByID(c echo.Context) error {
 // @Param body body request.UpdateUserRequest true "Update User"
 // @Success 200 {object} common.DefaultDataResponse{data=response.GetUserByIDResponse}
 // @Security ApiKeyAuth
-// @Router /api/v1/user/{id} [put]
+// @Router /v1/user/{id} [put]
 func (controller *Controller) Update(c echo.Context) error {
 	userID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -187,7 +187,7 @@ func (controller *Controller) Update(c echo.Context) error {
 // @Param id path int true "User ID"
 // @Success 200 {object} common.DefaultDataResponse{data=response.GetUserByIDResponse}
 // @Security ApiKeyAuth
-// @Router /api/v1/user/{id} [delete]
+// @Router /v1/user/{id} [delete]
 func (controller *Controller) Delete(c echo.Context) error {
 	userID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

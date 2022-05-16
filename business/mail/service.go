@@ -7,7 +7,7 @@ import (
 )
 
 type Service interface {
-	SendMail(mail *Mail) (interface{}, error)
+	SendMail(mail *Mail) (*Mail, error)
 }
 
 type mailService struct {
@@ -20,7 +20,7 @@ func CreateService(config *config.AppConfig) Service {
 	}
 }
 
-func (service *mailService) SendMail(mail *Mail) (interface{}, error) {
+func (service *mailService) SendMail(mail *Mail) (*Mail, error) {
 	if mail.Type == "reset" {
 		mail.Type = "Reset Password"
 	}
@@ -47,5 +47,5 @@ func (service *mailService) SendMail(mail *Mail) (interface{}, error) {
 		return nil, err
 	}
 
-	return mail.To, nil
+	return mail, nil
 }
