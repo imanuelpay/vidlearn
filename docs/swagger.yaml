@@ -88,6 +88,16 @@ definitions:
       old_password:
         type: string
     type: object
+  request.UpdateProfileRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+    required:
+    - email
+    - name
+    type: object
   request.UpdateUserRequest:
     properties:
       email:
@@ -255,7 +265,33 @@ definitions:
       token:
         type: string
     type: object
+  response.ProfileResponse:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      role:
+        type: integer
+      updated_at:
+        type: string
+      verified_at:
+        type: string
+    type: object
   response.RegisterResponse:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      verify_code:
+        type: string
+    type: object
+  response.ResetPasswordResponse:
     properties:
       email:
         type: string
@@ -325,6 +361,35 @@ info:
   title: Vidlearn API
   version: "1.0"
 paths:
+  /api/v1/auth/profile/change-password:
+    put:
+      consumes:
+      - application/json
+      description: Change Password
+      parameters:
+      - description: Change Password
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdatePasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.ResetPasswordResponse'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Change Password
+      tags:
+      - Authentication
   /api/v1/user:
     get:
       consumes:
@@ -437,40 +502,6 @@ paths:
       summary: Update User
       tags:
       - User
-  /api/v1/user/{id}/password:
-    put:
-      consumes:
-      - application/json
-      description: Update Password
-      parameters:
-      - description: User ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Update Password
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/request.UpdatePasswordRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/common.DefaultDataResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/response.GetUserByIDResponse'
-              type: object
-      security:
-      - ApiKeyAuth: []
-      summary: Update Password
-      tags:
-      - User
   /v1/auth/login:
     post:
       consumes:
@@ -498,6 +529,28 @@ paths:
       summary: Login user
       tags:
       - Authentication
+  /v1/auth/profile:
+    get:
+      consumes:
+      - application/json
+      description: Get user profile.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.ProfileResponse'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get user profile
+      tags:
+      - Authentication
   /v1/auth/register:
     post:
       consumes:
@@ -523,6 +576,33 @@ paths:
                   $ref: '#/definitions/response.RegisterResponse'
               type: object
       summary: Register user
+      tags:
+      - Authentication
+  /v1/auth/update-profile:
+    put:
+      consumes:
+      - application/json
+      description: Update Profile.
+      parameters:
+      - description: Update Profile
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateProfileRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.ProfileResponse'
+              type: object
+      summary: Update Profile
       tags:
       - Authentication
   /v1/category:
@@ -1254,7 +1334,7 @@ paths:
       summary: Update Video
       tags:
       - Video
-  /v1/video/playlist/{id}:
+  /v1/video/{id}/playlist:
     get:
       consumes:
       - application/json
