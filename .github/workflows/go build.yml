@@ -1,4 +1,4 @@
-name: Go
+name: Build Go App
 
 on:
   push:
@@ -17,9 +17,15 @@ jobs:
       uses: actions/setup-go@v3
       with:
         go-version: 1.18
-
+        
+    - name: Verify module
+      run: go mod verify
+        
     - name: Build
       run: go build -v ./...
+      
+    - name: Check go vet linting
+      run: go vet ./...
 
     - name: Test
       run: go test -v ./...
