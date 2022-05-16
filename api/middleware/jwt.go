@@ -46,7 +46,7 @@ func JWTMiddleware(config *config.AppConfig) echo.MiddlewareFunc {
 			claims, ok := token.Claims.(jwt.MapClaims)
 			var role float64 = claims["role"].(float64)
 			if ok && token.Valid {
-				if role != 1 && role != 99 {
+				if role < 0 {
 					return c.JSON(http.StatusForbidden, common.DefaultDataResponse{
 						Message: "You dont have permission",
 					})
