@@ -1,9 +1,9 @@
 package mail
 
 import (
-	"fmt"
-	"net/smtp"
 	"vidlearn-final-projcect/config"
+
+	"gopkg.in/gomail.v2"
 )
 
 type Service interface {
@@ -33,16 +33,23 @@ func (service *mailService) SendMail(mail *Mail) (*Mail, error) {
 		mail.Type = "Reset Password Successful"
 	}
 
-	body := "From: " + service.config.Mail.Sender + " - " + mail.Type + " <" + service.config.Mail.Username + ">" + "\n" +
-		"To: " + mail.To + "\n" +
-		"Cc: " + mail.From + "\n" +
-		"Subject: " + mail.Subject + "\n\n" +
-		mail.Body
+	from := service.config.Mail.Sender + " - " + mail.Type + " <" + service.config.Mail.Username + ">"
 
-	auth := smtp.PlainAuth("", service.config.Mail.Username, service.config.Mail.Password, service.config.Mail.Host)
-	smtpAddr := fmt.Sprintf("%s:%d", service.config.Mail.Host, service.config.Mail.Port)
+	mailer := gomail.NewMessage()
+	mailer.SetHeader("From", from)
+	mailer.SetHeader("To", mail.To)
+	mailer.SetAddressHeader("Cc", mail.From, "")
+	mailer.SetHeader("Subject", mail.Subject)
+	mailer.SetBody("text/html", mail.Body)
 
-	err := smtp.SendMail(smtpAddr, auth, service.config.Mail.Username, []string{mail.To, mail.From}, []byte(body))
+	dialer := gomail.NewDialer(
+		service.config.Mail.Host,
+		service.config.Mail.Port,
+		service.config.Mail.Username,
+		service.config.Mail.Password,
+	)
+
+	err := dialer.DialAndSend(mailer)
 	if err != nil {
 		return nil, err
 	}
