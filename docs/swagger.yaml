@@ -390,118 +390,6 @@ paths:
       summary: Change Password
       tags:
       - Authentication
-  /api/v1/user:
-    get:
-      consumes:
-      - application/json
-      description: Get All Users
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/common.DefaultDataResponse'
-            - properties:
-                data:
-                  items:
-                    $ref: '#/definitions/response.GetUserByIDResponse'
-                  type: array
-              type: object
-      security:
-      - ApiKeyAuth: []
-      summary: Get All Users
-      tags:
-      - User
-  /api/v1/user/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete User
-      parameters:
-      - description: User ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/common.DefaultDataResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/response.GetUserByIDResponse'
-              type: object
-      security:
-      - ApiKeyAuth: []
-      summary: Delete User
-      tags:
-      - User
-    get:
-      consumes:
-      - application/json
-      description: Get User By ID
-      parameters:
-      - description: User ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/common.DefaultDataResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/response.GetUserByIDResponse'
-              type: object
-      security:
-      - ApiKeyAuth: []
-      summary: Get User By ID
-      tags:
-      - User
-    put:
-      consumes:
-      - application/json
-      description: Update User
-      parameters:
-      - description: User ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Update User
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/request.UpdateUserRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/common.DefaultDataResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/response.GetUserByIDResponse'
-              type: object
-      security:
-      - ApiKeyAuth: []
-      summary: Update User
-      tags:
-      - User
   /v1/auth/login:
     post:
       consumes:
@@ -1196,6 +1084,118 @@ paths:
       summary: Get Playlists by Tool
       tags:
       - Tool
+  /v1/user:
+    get:
+      consumes:
+      - application/json
+      description: Get All Users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/response.GetUserByIDResponse'
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Users
+      tags:
+      - User
+  /v1/user/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete User
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetUserByIDResponse'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Delete User
+      tags:
+      - User
+    get:
+      consumes:
+      - application/json
+      description: Get User By ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetUserByIDResponse'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get User By ID
+      tags:
+      - User
+    put:
+      consumes:
+      - application/json
+      description: Update User
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update User
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DefaultDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.GetUserByIDResponse'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Update User
+      tags:
+      - User
   /v1/verify/{token}:
     get:
       consumes:
