@@ -8,7 +8,7 @@ type User struct {
 	Email      string
 	Password   string
 	Role       int
-	isReset    bool
+	IsReset    int
 	VerifyCode string
 	VerifiedAt time.Time
 	CreatedAt  time.Time

@@ -21,7 +21,19 @@ func CreateService(config *config.AppConfig) Service {
 }
 
 func (service *mailService) SendMail(mail *Mail) (interface{}, error) {
-	body := "From: " + service.config.Mail.Sender + "\n" +
+	if mail.Type == "reset" {
+		mail.Type = "Reset Password"
+	}
+
+	if mail.Type == "verify" {
+		mail.Type = "Verify Email"
+	}
+
+	if mail.Type == "reset-success" {
+		mail.Type = "Reset Password Successful"
+	}
+
+	body := "From: " + service.config.Mail.Sender + " - " + mail.Type + " <" + service.config.Mail.Username + ">" + "\n" +
 		"To: " + mail.To + "\n" +
 		"Cc: " + mail.From + "\n" +
 		"Subject: " + mail.Subject + "\n\n" +

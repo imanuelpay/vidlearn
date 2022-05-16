@@ -49,6 +49,11 @@ func (repository *MySQLRepository) CreatePlaylist(playlist *playlist.Playlist) (
 		return nil, err
 	}
 
+	err = repository.db.Preload("Category").First(&playlist, playlist.ID).Error
+	if err != nil {
+		return nil, err
+	}
+
 	return playlist, nil
 }
 
@@ -58,11 +63,16 @@ func (repository *MySQLRepository) UpdatePlaylist(playlistCurrent *playlist.Play
 		return nil, err
 	}
 
+	err = repository.db.Preload("Category").First(&playlistCurrent, playlistCurrent.ID).Error
+	if err != nil {
+		return nil, err
+	}
+
 	return playlistCurrent, nil
 }
 
 func (repository *MySQLRepository) DeletePlaylist(ID int) (playlist *playlist.Playlist, err error) {
-	err = repository.db.First(&playlist, ID).Error
+	err = repository.db.Preload("Category").First(&playlist, ID).Error
 	if err != nil {
 		return nil, err
 	}

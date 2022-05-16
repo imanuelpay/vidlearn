@@ -78,6 +78,13 @@ func (controller *Controller) GetAllPlaylistsByTool(c echo.Context) error {
 		})
 	}
 
+	if len(playlistsByTool) < 1 {
+		return c.JSON(http.StatusInternalServerError, common.DefaultDataResponse{
+			Message: "Playlist not found",
+			Data:    nil,
+		})
+	}
+
 	response := response.CreateGetPlaylistsByToolResponse(playlistsByTool)
 	responseData := common.DefaultDataResponse{
 		Message: "Get all playlists by tool successfully",

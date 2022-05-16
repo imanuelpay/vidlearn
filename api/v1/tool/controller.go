@@ -34,7 +34,7 @@ func (controller *Controller) GetAll(c echo.Context) error {
 	tools, err := controller.service.GetAllTool()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, common.DefaultDataResponse{
-			Message: "Get all tool failed",
+			Message: err.Error(),
 			Data:    nil,
 		})
 	}
@@ -67,7 +67,7 @@ func (controller *Controller) GetByID(c echo.Context) error {
 	tool, err := controller.service.GetToolByID(toolID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, common.DefaultDataResponse{
-			Message: "Get tool failed",
+			Message: err.Error(),
 			Data:    nil,
 		})
 	}
@@ -102,7 +102,7 @@ func (controller *Controller) Create(c echo.Context) error {
 	tool, err := controller.service.CreateTool(&request)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, common.DefaultDataResponse{
-			Message: "Create tool failed",
+			Message: err.Error(),
 			Data:    nil,
 		})
 	}
@@ -143,7 +143,7 @@ func (controller *Controller) Update(c echo.Context) error {
 	tool, err := controller.service.UpdateTool(&request, toolID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, common.DefaultDataResponse{
-			Message: "Update tool failed",
+			Message: err.Error(),
 			Data:    nil,
 		})
 	}
@@ -176,7 +176,7 @@ func (controller *Controller) Delete(c echo.Context) error {
 	tool, err := controller.service.DeleteTool(toolID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, common.DefaultDataResponse{
-			Message: "Delete tool failed",
+			Message: err.Error(),
 			Data:    nil,
 		})
 	}

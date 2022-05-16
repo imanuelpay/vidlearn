@@ -30,7 +30,7 @@ func CreateController(service videoBusiness.Service) *Controller {
 // @Param id path string true "Playlist ID"
 // @Success 200 {object} common.DefaultDataResponse{data=response.Playlist}
 // @Security ApiKeyAuth
-// @Router /v1/video/playlist/{id} [get]
+// @Router /v1/video/{id}/playlist [get]
 func (controller *Controller) GetVideoByPlaylist(c echo.Context) error {
 	playlistID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -41,6 +41,13 @@ func (controller *Controller) GetVideoByPlaylist(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, common.DefaultDataResponse{
 			Message: err.Error(),
+			Data:    nil,
+		})
+	}
+
+	if len(videos) < 1 {
+		return c.JSON(http.StatusNotFound, common.DefaultDataResponse{
+			Message: "Video not found",
 			Data:    nil,
 		})
 	}

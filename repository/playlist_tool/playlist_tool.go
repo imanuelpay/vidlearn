@@ -48,16 +48,22 @@ func (repository *MySQLRepository) CreatePlaylistTool(playlistTool *playlist_too
 		return nil, err
 	}
 
-	return playlistTool, nil
-}
-
-func (repository *MySQLRepository) DeletePlaylistTool(playlistID, toolID int) (playlistTool *playlist_tool.PlaylistTool, err error) {
-	err = repository.db.Where("playlist_id=? AND tool_id=?", playlistID, toolID).First(&playlistTool).Error
+	err = repository.db.Preload("Playlist").Preload("Tool").Where("playlist_id=? AND tool_id=?", playlistTool.PlaylistID, playlistTool.ToolID).Find(&playlistTool).Error
 	if err != nil {
 		return nil, err
 	}
 
-	err = repository.db.Where("playlist_id=? AND tool_id=?", playlistID, toolID).Delete(&playlistTool).Error
+	return playlistTool, nil
+}
+
+func (repository *MySQLRepository) DeletePlaylistTool(playlistID, toolID int) (playlistTool *playlist_tool.PlaylistTool, err error) {
+	err = repository.db.Preload("Playlist").Preload("Tool").Where("playlist_id=? AND tool_id=?", playlistID, toolID).First(&playlistTool).Error
+	if err != nil {
+		return nil, err
+	}
+
+	var playlistToolDelete *playlist_tool.PlaylistTool
+	err = repository.db.Where("playlist_id=? AND tool_id=?", playlistID, toolID).Delete(&playlistToolDelete).Error
 	if err != nil {
 		return nil, err
 	}

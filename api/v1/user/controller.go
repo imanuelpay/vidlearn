@@ -131,52 +131,52 @@ func (controller *Controller) Update(c echo.Context) error {
 	return c.JSON(http.StatusOK, responseData)
 }
 
-// UpdatePassword func Update Password
-// @Description Update Password
-// @Summary Update Password
-// @Tags User
-// @Accept json
-// @Produce json
-// @Param id path int true "User ID"
-// @Param body body request.UpdatePasswordRequest true "Update Password"
-// @Success 200 {object} common.DefaultDataResponse{data=response.GetUserByIDResponse}
-// @Security ApiKeyAuth
-// @Router /api/v1/user/{id}/password [put]
-func (controller *Controller) UpdatePassword(c echo.Context) error {
-	userID, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, common.DefaultDataResponse{
-			Message: err.Error(),
-			Data:    nil,
-		})
-	}
+// // UpdatePassword func Update Password
+// // @Description Update Password
+// // @Summary Update Password
+// // @Tags User
+// // @Accept json
+// // @Produce json
+// // @Param id path int true "User ID"
+// // @Param body body request.UpdatePasswordRequest true "Update Password"
+// // @Success 200 {object} common.DefaultDataResponse{data=response.GetUserByIDResponse}
+// // @Security ApiKeyAuth
+// // @Router /api/v1/user/{id}/password [put]
+// func (controller *Controller) UpdatePassword(c echo.Context) error {
+// 	userID, err := strconv.Atoi(c.Param("id"))
+// 	if err != nil {
+// 		return c.JSON(http.StatusBadRequest, common.DefaultDataResponse{
+// 			Message: err.Error(),
+// 			Data:    nil,
+// 		})
+// 	}
 
-	updatePasswordRequest := new(request.UpdatePasswordRequest)
-	if err := c.Bind(updatePasswordRequest); err != nil {
-		return c.JSON(http.StatusBadRequest, common.DefaultDataResponse{
-			Message: err.Error(),
-			Data:    nil,
-		})
-	}
+// 	updatePasswordRequest := new(request.UpdatePasswordRequest)
+// 	if err := c.Bind(updatePasswordRequest); err != nil {
+// 		return c.JSON(http.StatusBadRequest, common.DefaultDataResponse{
+// 			Message: err.Error(),
+// 			Data:    nil,
+// 		})
+// 	}
 
-	request := *updatePasswordRequest.ToSpec()
+// 	request := *updatePasswordRequest.ToSpec()
 
-	user, err := controller.service.UpdateUserPassword(&request, userID)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, common.DefaultDataResponse{
-			Message: err.Error(),
-			Data:    nil,
-		})
-	}
+// 	user, err := controller.service.UpdateUserPassword(&request, userID)
+// 	if err != nil {
+// 		return c.JSON(http.StatusInternalServerError, common.DefaultDataResponse{
+// 			Message: err.Error(),
+// 			Data:    nil,
+// 		})
+// 	}
 
-	response := response.CreateGetUserByIDResponse(user)
-	responseData := common.DefaultDataResponse{
-		Message: "Update user password successfully",
-		Data:    response,
-	}
+// 	response := response.CreateGetUserByIDResponse(user)
+// 	responseData := common.DefaultDataResponse{
+// 		Message: "Update user password successfully",
+// 		Data:    response,
+// 	}
 
-	return c.JSON(http.StatusOK, responseData)
-}
+// 	return c.JSON(http.StatusOK, responseData)
+// }
 
 // Delete func Delete User
 // @Description Delete User
@@ -205,9 +205,10 @@ func (controller *Controller) Delete(c echo.Context) error {
 		})
 	}
 
+	response := response.CreateGetUserByIDResponse(user)
 	responseData := common.DefaultDataResponse{
 		Message: "Delete user successfully",
-		Data:    user,
+		Data:    response,
 	}
 
 	return c.JSON(http.StatusOK, responseData)

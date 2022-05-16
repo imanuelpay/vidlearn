@@ -5,13 +5,15 @@ type Mail struct {
 	To      string
 	Subject string
 	Body    string
+	Type    string
 }
 
-func NewMail(from, to, subject, body string) *Mail {
+func NewMail(From, To, Subject, Body, Type string) *Mail {
 	return &Mail{
-		From:    from,
-		To:      to,
-		Subject: subject,
-		Body:    body,
+		From:    From,
+		To:      To,
+		Subject: Subject,
+		Body:    Body,
+		Type:    Type,
 	}
 }

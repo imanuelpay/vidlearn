@@ -47,7 +47,7 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	playlistV1.DELETE("/:id", controller.PlaylistV1Controller.Delete, middleware.JWTMiddlewareAdmin(config))
 
 	videoV1 := e.Group("/api/v1/video")
-	videoV1.GET("/playlist/:id", controller.VideoV1Controller.GetVideoByPlaylist, middleware.JWTMiddleware(config))
+	videoV1.GET("/:id/playlist", controller.VideoV1Controller.GetVideoByPlaylist, middleware.JWTMiddleware(config))
 	videoV1.GET("/:id", controller.VideoV1Controller.GetByID, middleware.JWTMiddleware(config))
 	videoV1.POST("", controller.VideoV1Controller.Create, middleware.JWTMiddlewareAdmin(config))
 	videoV1.PUT("/:id", controller.VideoV1Controller.Update, middleware.JWTMiddlewareAdmin(config))
@@ -60,15 +60,17 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	playlistToolV1.GET("/tool/:id/playlist", controller.PlaylistToolV1Controller.GetAllPlaylistsByTool, middleware.JWTMiddleware(config))
 
 	userV1 := e.Group("/api/v1/user")
-	userV1.GET("", controller.UserV1Controller.GetAll, middleware.JWTMiddleware(config))
+	userV1.GET("", controller.UserV1Controller.GetAll, middleware.JWTMiddlewareAdmin(config))
 	userV1.GET("/:id", controller.UserV1Controller.GetByID, middleware.JWTMiddleware(config))
 	userV1.PUT("/:id", controller.UserV1Controller.Update, middleware.JWTMiddlewareAdmin(config))
-	userV1.PUT("/:id/password", controller.UserV1Controller.UpdatePassword, middleware.JWTMiddleware(config))
 	userV1.DELETE("/:id", controller.UserV1Controller.Delete, middleware.JWTMiddlewareAdmin(config))
 
 	authV1 := e.Group("/api/v1/auth")
 	authV1.POST("/register", controller.AuthV1Controller.Register)
 	authV1.POST("/login", controller.AuthV1Controller.Login)
+	authV1.GET("/profile", controller.AuthV1Controller.GetProfile, middleware.JWTMiddleware(config))
+	authV1.PUT("/profile", controller.AuthV1Controller.UpdateProfile, middleware.JWTMiddleware(config))
+	authV1.PUT("/profile/change-password", controller.AuthV1Controller.ChangePassword, middleware.JWTMiddleware(config))
 
 	verifyV1 := e.Group("/api/v1/verify")
 	verifyV1.GET("/:token", controller.AuthV1Controller.Verify)

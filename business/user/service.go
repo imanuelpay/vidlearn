@@ -2,7 +2,6 @@ package user
 
 import (
 	"errors"
-	"fmt"
 	"time"
 	"vidlearn-final-projcect/business/mail"
 	"vidlearn-final-projcect/business/user/spec"
@@ -10,6 +9,7 @@ import (
 	"vidlearn-final-projcect/util"
 
 	validator "github.com/go-playground/validator/v10"
+	"github.com/golang-jwt/jwt"
 )
 
 type Repository interface {
@@ -24,6 +24,7 @@ type Repository interface {
 
 type Service interface {
 	GetAllUser() (user []*User, err error)
+	GetUserLogin(jwtToken string) (user *User, err error)
 	GetUserByID(ID int) (user *User, err error)
 	GetUserByEmailAndPassword(upsertUserLoginSpec *spec.UpsertLoginUserSpec) (user *User, err error)
 	VerifyEmail(verifyCode string) (user *User, err error)
@@ -63,7 +64,7 @@ func (service *userService) VerifyEmail(verifyCode string) (user *User, err erro
 		return nil, err
 	}
 
-	if user.isReset == true {
+	if user.IsReset == 1 {
 		return nil, errors.New("User is reset")
 	}
 
@@ -76,28 +77,47 @@ func (service *userService) VerifyEmail(verifyCode string) (user *User, err erro
 func (service *userService) ForgotPassword(email string) (user *User, err error) {
 	user, err = service.repository.GetUserByEmail(email)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("email not found")
+	}
+
+	if user.IsReset == 1 {
+		return nil, errors.New("User is reset")
+	}
+
+	time := time.Time{}
+	if user.VerifiedAt == time {
+		return nil, errors.New("User not verified")
 	}
 
 	verifyCode := util.RandomString(64)
-
 	user.VerifyCode = verifyCode
-	user.isReset = true
+	user.IsReset = 1
 
-	mailService := mail.CreateService(service.config)
-
-	mail := new(mail.Mail)
-	mail.To = user.Email
-	mail.Subject = "Reset your password"
-	mail.Body = "Reset your password by clicking this link: " + service.config.App.URL + "/api/v1/reset-password/" + verifyCode
-	mail.From = service.config.Mail.Username
-
-	_, err = mailService.SendMail(mail)
+	userData, err := service.repository.UpdateUser(user, user.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	return service.repository.UpdateUser(user, user.ID)
+	To := userData.Email
+	Subject := "Reset your password"
+	Body := "Reset your password by clicking this link: " + service.config.App.URL + "/api/v1/reset-password/" + user.VerifyCode
+	From := service.config.Mail.Username
+
+	mailData := mail.NewMail(
+		From,
+		To,
+		Subject,
+		Body,
+		"reset",
+	)
+
+	mailService := mail.CreateService(service.config)
+	_, err = mailService.SendMail(mailData)
+	if err != nil {
+		return nil, err
+	}
+
+	return userData, nil
 }
 
 func (service *userService) ResetPassword(upsertUserResetPasswordSpec *spec.UpsertUserResetPasswordSpec, verifyCode string) (*User, error) {
@@ -111,7 +131,7 @@ func (service *userService) ResetPassword(upsertUserResetPasswordSpec *spec.Upse
 		return nil, err
 	}
 
-	if user.isReset == false {
+	if user.IsReset == 0 {
 		return nil, errors.New("User is not reset")
 	}
 
@@ -121,8 +141,35 @@ func (service *userService) ResetPassword(upsertUserResetPasswordSpec *spec.Upse
 	}
 
 	user.Password = passwordHash
+	user.VerifyCode = " "
+	user.IsReset = 0
+	user.UpdatedAt = time.Now()
 
-	return service.repository.UpdateUser(user, user.ID)
+	userData, err := service.repository.UpdateUser(user, user.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	To := userData.Email
+	Subject := "Password reset successful"
+	Body := "Your password has been reset successfully, please login with your new password"
+	From := service.config.Mail.Username
+
+	mailData := mail.NewMail(
+		From,
+		To,
+		Subject,
+		Body,
+		"reset-success",
+	)
+
+	mailService := mail.CreateService(service.config)
+	_, err = mailService.SendMail(mailData)
+	if err != nil {
+		return nil, err
+	}
+
+	return userData, nil
 }
 
 func (service *userService) GetUserByEmailAndPassword(upsertUserLoginSpec *spec.UpsertLoginUserSpec) (user *User, err error) {
@@ -170,21 +217,31 @@ func (service *userService) CreateUser(upsertUserSpec *spec.UpsertUserCreateSpec
 		time.Now(),
 	)
 
-	mailService := mail.CreateService(service.config)
-
-	mail := new(mail.Mail)
-	mail.To = user.Email
-	mail.Subject = "Verify your email"
-	mail.Body = "Verify your email by clicking this link: " + service.config.App.URL + "/api/v1/verify/" + verifyCode
-	mail.From = service.config.Mail.Username
-
-	fmt.Println(service.config.App.URL)
-	_, err = mailService.SendMail(mail)
+	userData, err := service.repository.CreateUser(user)
 	if err != nil {
 		return nil, err
 	}
 
-	return service.repository.CreateUser(user)
+	To := userData.Email
+	Subject := "Verify your email"
+	Body := "Verify your email by clicking this link: " + service.config.App.URL + "/api/v1/verify/" + verifyCode
+	From := service.config.Mail.Username
+
+	mailData := mail.NewMail(
+		From,
+		To,
+		Subject,
+		Body,
+		"verify",
+	)
+
+	mailService := mail.CreateService(service.config)
+	_, err = mailService.SendMail(mailData)
+	if err != nil {
+		return nil, err
+	}
+
+	return userData, nil
 }
 
 func (service *userService) UpdateUser(upsertUserSpec *spec.UpsertUserUpdateSpec, IDCurrent int) (*User, error) {
@@ -198,12 +255,51 @@ func (service *userService) UpdateUser(upsertUserSpec *spec.UpsertUserUpdateSpec
 		return nil, err
 	}
 
+	// verifyCode := userCurrent.VerifyCode
+	// VerifiedAt := userCurrent.VerifiedAt
+	// if upsertUserSpec.Email != userCurrent.Email {
+	// 	verifyCode = util.RandomString(64)
+	// 	VerifiedAt = time.Time{}
+
+	// 	To := upsertUserSpec.Email
+	// 	Subject := "Verify your email"
+	// 	Body := "Verify your email by clicking this link: " + service.config.App.URL + "/api/v1/verify/" + verifyCode
+	// 	From := service.config.Mail.Username
+
+	// 	mailData := mail.NewMail(
+	// 		From,
+	// 		To,
+	// 		Subject,
+	// 		Body,
+	// 		"verify",
+	// 	)
+
+	// 	mailService := mail.CreateService(service.config)
+	// 	_, err = mailService.SendMail(mailData)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+	// }
+
 	user := userCurrent.ModifyUser(
 		upsertUserSpec.Name,
 		upsertUserSpec.Email,
 		upsertUserSpec.Role,
 		time.Now(),
 	)
+
+	// userData := &User{
+	// 	ID:         user.ID,
+	// 	Name:       user.Name,
+	// 	Email:      user.Email,
+	// 	Password:   user.Password,
+	// 	Role:       user.Role,
+	// 	IsReset:    user.IsReset,
+	// 	VerifyCode: verifyCode,
+	// 	VerifiedAt: VerifiedAt,
+	// 	CreatedAt:  user.CreatedAt,
+	// 	UpdatedAt:  user.UpdatedAt,
+	// }
 
 	return service.repository.UpdateUser(user, IDCurrent)
 }
@@ -234,6 +330,33 @@ func (service *userService) UpdateUserPassword(upsertUserSpec *spec.UpsertUserPa
 	)
 
 	return service.repository.UpdateUser(user, IDCurrent)
+}
+
+func (service *userService) GetUserLogin(jwtToken string) (user *User, err error) {
+	claim := jwt.MapClaims{}
+	token, _ := jwt.ParseWithClaims(jwtToken, claim, func(t *jwt.Token) (interface{}, error) {
+		return []byte(service.config.App.Key), nil
+	})
+
+	jwtSignedMethod := jwt.SigningMethodHS256
+	method, ok := token.Method.(*jwt.SigningMethodHMAC)
+	if !ok || method != jwtSignedMethod {
+		return nil, errors.New("invalid token")
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	var userID float64 = claims["userId"].(float64)
+
+	if !ok || !token.Valid {
+		return nil, errors.New("invalid token")
+	}
+
+	user, err = service.repository.GetUserByID(int(userID))
+	if err != nil {
+		return nil, errors.New("user not found")
+	}
+
+	return user, nil
 }
 
 func (service *userService) DeleteUser(ID int) (user *User, err error) {

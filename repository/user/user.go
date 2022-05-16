@@ -79,6 +79,11 @@ func (repository *MySQLRepository) UpdateUser(userCurrent *user.User, IDCurrent 
 }
 
 func (repository *MySQLRepository) DeleteUser(ID int) (user *user.User, err error) {
+	err = repository.db.First(&user, ID).Error
+	if err != nil {
+		return nil, err
+	}
+
 	err = repository.db.Delete(&user, ID).Error
 	if err != nil {
 		return nil, err

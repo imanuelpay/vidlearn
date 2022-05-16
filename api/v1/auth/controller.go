@@ -2,10 +2,12 @@ package auth
 
 import (
 	"net/http"
+	"strings"
 	"time"
 	"vidlearn-final-projcect/api/common"
 	"vidlearn-final-projcect/api/v1/auth/request"
 	"vidlearn-final-projcect/api/v1/auth/response"
+	requestUser "vidlearn-final-projcect/api/v1/user/request"
 	userBusiness "vidlearn-final-projcect/business/user"
 	"vidlearn-final-projcect/config"
 
@@ -80,6 +82,110 @@ func (controller *Controller) Login(c echo.Context) error {
 	return c.JSON(http.StatusCreated, responseData)
 }
 
+// GetProfile func for get user profile.
+// @Description Get user profile.
+// @Summary Get user profile
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Success 200 {object} common.DefaultDataResponse{data=response.ProfileResponse}
+// @Security ApiKeyAuth
+// @Router /v1/auth/profile [get]
+func (controller *Controller) GetProfile(c echo.Context) error {
+	signature := strings.Split(c.Request().Header.Get("Authorization"), " ")
+	if len(signature) < 2 {
+		return c.JSON(http.StatusForbidden, common.DefaultDataResponse{
+			Message: "Invalid token",
+			Data:    nil,
+		})
+	}
+
+	if signature[0] != "Bearer" {
+		return c.JSON(http.StatusForbidden, common.DefaultDataResponse{
+			Message: "Invalid token",
+			Data:    nil,
+		})
+	}
+
+	jwtToken := signature[1]
+	user, err := controller.userService.GetUserLogin(jwtToken)
+	if err != nil {
+		return c.JSON(http.StatusForbidden, common.DefaultDataResponse{
+			Message: err.Error(),
+			Data:    nil,
+		})
+	}
+
+	response := response.CreateProfileResponse(user)
+	responseData := common.DefaultDataResponse{
+		Message: "Get profile successfully",
+		Data:    response,
+	}
+
+	return c.JSON(http.StatusOK, responseData)
+}
+
+// UpdateProfile func for Update Profile.
+// @Description Update Profile.
+// @Summary Update Profile
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param body body request.UpdateProfileRequest true "Update Profile"
+// @Success 200 {object} common.DefaultDataResponse{data=response.ProfileResponse}
+// @Router /v1/auth/update-profile [put]
+func (controller *Controller) UpdateProfile(c echo.Context) error {
+	signature := strings.Split(c.Request().Header.Get("Authorization"), " ")
+	if len(signature) < 2 {
+		return c.JSON(http.StatusForbidden, common.DefaultDataResponse{
+			Message: "Invalid token",
+			Data:    nil,
+		})
+	}
+
+	if signature[0] != "Bearer" {
+		return c.JSON(http.StatusForbidden, common.DefaultDataResponse{
+			Message: "Invalid token",
+			Data:    nil,
+		})
+	}
+
+	jwtToken := signature[1]
+	user, err := controller.userService.GetUserLogin(jwtToken)
+	if err != nil {
+		return c.JSON(http.StatusForbidden, common.DefaultDataResponse{
+			Message: err.Error(),
+			Data:    nil,
+		})
+	}
+
+	updateUserRequest := new(request.UpdateProfileRequest)
+	if err := c.Bind(updateUserRequest); err != nil {
+		return c.JSON(http.StatusBadRequest, common.DefaultDataResponse{
+			Message: err.Error(),
+			Data:    nil,
+		})
+	}
+
+	request := *updateUserRequest.ToSpec(user.Role)
+
+	user, err = controller.userService.UpdateUser(&request, user.ID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, common.DefaultDataResponse{
+			Message: err.Error(),
+			Data:    nil,
+		})
+	}
+
+	response := response.CreateProfileResponse(user)
+	responseData := common.DefaultDataResponse{
+		Message: "Update user successfully",
+		Data:    response,
+	}
+
+	return c.JSON(http.StatusOK, responseData)
+}
+
 // Register func for register user.
 // @Description Register user.
 // @Summary Register user
@@ -108,7 +214,7 @@ func (controller *Controller) Register(c echo.Context) error {
 		})
 	}
 
-	response := response.CreateRegisterResponse(user.Name, user.Email)
+	response := response.CreateRegisterResponse(user.Name, user.Email, user.VerifyCode)
 	responseData := common.DefaultDataResponse{
 		Message: "Register successfully, please check your email to verify your account",
 		Data:    response,
@@ -143,10 +249,13 @@ func (controller *Controller) Verify(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusOK, common.DefaultDataResponse{
+	response := response.CreateVerifyResponse(user.Name, user.Email, user.VerifiedAt)
+	responseData := common.DefaultDataResponse{
 		Message: "Verify successfully, please login",
-		Data:    user.Email,
-	})
+		Data:    response,
+	}
+
+	return c.JSON(http.StatusOK, responseData)
 }
 
 // ForgotPassword func for Forgot Password user.
@@ -178,10 +287,13 @@ func (controller *Controller) ForgotPassword(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusOK, common.DefaultDataResponse{
-		Message: "Forgot password successfully, please check your email to reset your password",
-		Data:    user.Email,
-	})
+	response := response.CreateForgotPasswordResponse(user.Name, user.Email, user.VerifyCode)
+	responseData := common.DefaultDataResponse{
+		Message: "Forgot password successfully, please check your email to verify your account",
+		Data:    response,
+	}
+
+	return c.JSON(http.StatusOK, responseData)
 }
 
 // ResetPassword func for Reset Password user.
@@ -221,8 +333,72 @@ func (controller *Controller) ResetPassword(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusOK, common.DefaultDataResponse{
+	response := response.CreateResetPasswordResponse(user.Name, user.Email)
+	responseData := common.DefaultDataResponse{
 		Message: "Reset password successfully, please login",
-		Data:    user.Email,
-	})
+		Data:    response,
+	}
+
+	return c.JSON(http.StatusOK, responseData)
+}
+
+// ChangePassword func Change Password
+// @Description Change Password
+// @Summary Change Password
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param body body requestUser.UpdatePasswordRequest true "Change Password"
+// @Success 200 {object} common.DefaultDataResponse{data=response.ResetPasswordResponse}
+// @Security ApiKeyAuth
+// @Router /api/v1/auth/profile/change-password [put]
+func (controller *Controller) ChangePassword(c echo.Context) error {
+	signature := strings.Split(c.Request().Header.Get("Authorization"), " ")
+	if len(signature) < 2 {
+		return c.JSON(http.StatusForbidden, common.DefaultDataResponse{
+			Message: "Invalid token",
+			Data:    nil,
+		})
+	}
+
+	if signature[0] != "Bearer" {
+		return c.JSON(http.StatusForbidden, common.DefaultDataResponse{
+			Message: "Invalid token",
+			Data:    nil,
+		})
+	}
+
+	jwtToken := signature[1]
+	user, err := controller.userService.GetUserLogin(jwtToken)
+	if err != nil {
+		return c.JSON(http.StatusForbidden, common.DefaultDataResponse{
+			Message: err.Error(),
+			Data:    nil,
+		})
+	}
+	updatePasswordRequest := new(requestUser.UpdatePasswordRequest)
+	if err := c.Bind(updatePasswordRequest); err != nil {
+		return c.JSON(http.StatusBadRequest, common.DefaultDataResponse{
+			Message: err.Error(),
+			Data:    nil,
+		})
+	}
+
+	request := *updatePasswordRequest.ToSpec()
+
+	user, err = controller.userService.UpdateUserPassword(&request, user.ID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, common.DefaultDataResponse{
+			Message: err.Error(),
+			Data:    nil,
+		})
+	}
+
+	response := response.CreateResetPasswordResponse(user.Name, user.Email)
+	responseData := common.DefaultDataResponse{
+		Message: "Change password successfully",
+		Data:    response,
+	}
+
+	return c.JSON(http.StatusOK, responseData)
 }
