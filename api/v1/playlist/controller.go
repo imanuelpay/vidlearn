@@ -3,16 +3,19 @@ package playlist
 import (
 	"net/http"
 	"strconv"
+	"strings"
 	"vidlearn-final-projcect/api/common"
 	"vidlearn-final-projcect/api/v1/playlist/request"
 	"vidlearn-final-projcect/api/v1/playlist/response"
 	playlistBusiness "vidlearn-final-projcect/business/playlist"
+	userBusiness "vidlearn-final-projcect/business/user"
 
 	"github.com/labstack/echo/v4"
 )
 
 type Controller struct {
-	service playlistBusiness.Service
+	service     playlistBusiness.Service
+	userService userBusiness.Service
 }
 
 func CreateController(service playlistBusiness.Service) *Controller {
@@ -99,8 +102,31 @@ func (controller *Controller) Create(c echo.Context) error {
 
 	request := *createPlaylistRequest.ToSpec()
 
-	// TODO: authorize admin
-	creared_by := "admin" // static for now
+	signature := strings.Split(c.Request().Header.Get("Authorization"), " ")
+	if len(signature) < 2 {
+		return c.JSON(http.StatusForbidden, common.DefaultDataResponse{
+			Message: "Invalid token",
+			Data:    nil,
+		})
+	}
+
+	if signature[0] != "Bearer" {
+		return c.JSON(http.StatusForbidden, common.DefaultDataResponse{
+			Message: "Invalid token",
+			Data:    nil,
+		})
+	}
+
+	jwtToken := signature[1]
+	user, err := controller.userService.GetUserLogin(jwtToken)
+	if err != nil {
+		return c.JSON(http.StatusForbidden, common.DefaultDataResponse{
+			Message: err.Error(),
+			Data:    nil,
+		})
+	}
+
+	creared_by := user.Name
 
 	playlist, err := controller.service.CreatePlaylist(&request, creared_by)
 	if err != nil {
@@ -143,8 +169,31 @@ func (controller *Controller) Update(c echo.Context) error {
 
 	request := *updatePlaylistRequest.ToSpec()
 
-	// TODO: authorize admin
-	updated_by := "admin" // static for now
+	signature := strings.Split(c.Request().Header.Get("Authorization"), " ")
+	if len(signature) < 2 {
+		return c.JSON(http.StatusForbidden, common.DefaultDataResponse{
+			Message: "Invalid token",
+			Data:    nil,
+		})
+	}
+
+	if signature[0] != "Bearer" {
+		return c.JSON(http.StatusForbidden, common.DefaultDataResponse{
+			Message: "Invalid token",
+			Data:    nil,
+		})
+	}
+
+	jwtToken := signature[1]
+	user, err := controller.userService.GetUserLogin(jwtToken)
+	if err != nil {
+		return c.JSON(http.StatusForbidden, common.DefaultDataResponse{
+			Message: err.Error(),
+			Data:    nil,
+		})
+	}
+
+	updated_by := user.Name
 
 	playlist, err := controller.service.UpdatePlaylist(&request, updated_by, playlistID)
 	if err != nil {
