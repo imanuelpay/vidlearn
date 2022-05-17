@@ -61,7 +61,7 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 
 	userV1 := e.Group("/api/v1/user")
 	userV1.GET("", controller.UserV1Controller.GetAll, middleware.JWTMiddlewareAdmin(config))
-	userV1.GET("/:id", controller.UserV1Controller.GetByID, middleware.JWTMiddleware(config))
+	userV1.GET("/:id", controller.UserV1Controller.GetByID, middleware.JWTMiddlewareAdmin(config))
 	userV1.PUT("/:id", controller.UserV1Controller.Update, middleware.JWTMiddlewareAdmin(config))
 	userV1.DELETE("/:id", controller.UserV1Controller.Delete, middleware.JWTMiddlewareAdmin(config))
 
