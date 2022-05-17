@@ -57,6 +57,9 @@ func GetConfig() *AppConfig {
 }
 
 func initConfig() *AppConfig {
+	var defaultConfig AppConfig
+	defaultConfig.App.Port = 8000
+
 	viper.SetConfigType("toml")
 	viper.SetConfigName("config")
 	viper.AddConfigPath("./config/")

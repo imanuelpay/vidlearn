@@ -1,0 +1,50 @@
+version: '3'
+services:
+  app:
+    container_name: vidlearn_app
+    build: .
+    ports: 
+      - 8000:8000 
+    restart: on-failure
+    volumes:
+      - api:/usr/src/app/
+    depends_on:
+      - vidlearn_db
+    networks:
+      - vidlearn_network
+  vidlearn_db:
+    image: mysql:latest
+    container_name: db_mysql
+    ports: 
+      - 3307:3306
+    environment: 
+      - MYSQL_ROOT_HOST=vidlearn_db
+      - MYSQL_USER=imanuelpay
+      - MYSQL_PASSWORD=secret_password
+      - MYSQL_DATABASE=vidlearn
+      - MYSQL_ROOT_PASSWORD=secret_password
+    volumes:
+      - database_mysql:/var/lib/mysql
+    networks:
+      - vidlearn_network
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_container
+    depends_on:
+      - vidlearn_db
+    environment:
+      - PMA_HOST=vidlearn_db # Note the "mysql". Must be the name of the what you used as the mysql service.
+      - PMA_USER=imanuelpay
+      - PMA_PORT=3306
+      - PMA_PASSWORD=secret_password
+    ports:
+      - 9090:80
+    restart: always
+    networks:
+      - vidlearn_network
+volumes:
+  api:
+  database_mysql:
+networks:
+  vidlearn_network:
+    driver: bridge

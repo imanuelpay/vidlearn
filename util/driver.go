@@ -99,7 +99,20 @@ func CreateMySQLClient(config *config.AppConfig) *gorm.DB {
 }
 
 func CreateMongoClient(config *config.AppConfig) *mongo.Client {
-	uri := fmt.Sprintf("mongodb://%v:%v",
+	uri := "mongodb://"
+
+	if config.Log.Username != "" {
+		uri = fmt.Sprintf("%s%v:%v@%v:%v",
+			uri,
+			config.Log.Username,
+			config.Log.Password,
+			config.Log.Host,
+			config.Log.Port,
+		)
+	}
+
+	uri = fmt.Sprintf("%s%v:%v",
+		uri,
 		config.Log.Host,
 		config.Log.Port,
 	)

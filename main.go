@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"vidlearn-final-projcect/api"
-	"vidlearn-final-projcect/api/middleware"
 	"vidlearn-final-projcect/app/modules"
 	"vidlearn-final-projcect/config"
 	"vidlearn-final-projcect/util"
@@ -36,11 +35,12 @@ import (
 // @BasePath /api
 func main() {
 	config := config.GetConfig()
+	fmt.Println(config)
 
 	dbCon := util.CreateDatabaseConnection(config)
-	dbLog := util.CreateLogConnection(config)
+	// dbLog := util.CreateLogConnection(config)
 	defer dbCon.CloseConnection()
-	defer dbLog.CloseConnection()
+	// defer dbLog.CloseConnection()
 
 	controllers := modules.RegisterModules(dbCon, config)
 
@@ -48,8 +48,8 @@ func main() {
 	e.Pre(echoMiddleware.RemoveTrailingSlash())
 
 	e.Use(echoMiddleware.CORS())
-	middleware.Logger(e, dbLog)
-	e.HTTPErrorHandler = middleware.ErrorHandler
+	// middleware.Logger(e, dbLog)
+	// e.HTTPErrorHandler = middleware.ErrorHandler
 	e.HideBanner = true
 
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
