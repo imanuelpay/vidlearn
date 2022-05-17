@@ -133,6 +133,7 @@ func (controller *Controller) GetProfile(c echo.Context) error {
 // @Produce json
 // @Param body body request.UpdateProfileRequest true "Update Profile"
 // @Success 200 {object} common.DefaultDataResponse{data=response.ProfileResponse}
+// @Security ApiKeyAuth
 // @Router /v1/auth/update-profile [put]
 func (controller *Controller) UpdateProfile(c echo.Context) error {
 	signature := strings.Split(c.Request().Header.Get("Authorization"), " ")

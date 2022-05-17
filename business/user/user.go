@@ -29,6 +29,7 @@ func NewUser(
 		Role:       0,
 		VerifyCode: verifyCode,
 		CreatedAt:  createdAt,
+		VerifiedAt: time.Time{},
 	}
 }
 
