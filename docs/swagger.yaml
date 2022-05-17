@@ -347,7 +347,7 @@ definitions:
           $ref: '#/definitions/response.GetVideoByIDByPlaylistResponse'
         type: array
     type: object
-host: http://54.189.105.93:8000
+host: ec2-54-189-105-93.us-west-2.compute.amazonaws.com:8000
 info:
   contact:
     email: support@vidlearn.com
@@ -1362,6 +1362,8 @@ paths:
       summary: Get Video By Playlist
       tags:
       - Video
+schemes:
+- http
 securityDefinitions:
   ApiKeyAuth:
     in: header

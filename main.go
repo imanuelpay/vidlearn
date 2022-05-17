@@ -32,8 +32,9 @@ import (
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header
 // @name Authorization
-// @host http://54.189.105.93:8000
+// @host ec2-54-189-105-93.us-west-2.compute.amazonaws.com:8000
 // @BasePath /api
+// @schemes http
 func main() {
 	config := config.GetConfig()
 

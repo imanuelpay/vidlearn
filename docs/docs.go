@@ -2299,9 +2299,9 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "http://54.189.105.93:8000",
+	Host:             "ec2-54-189-105-93.us-west-2.compute.amazonaws.com:8000",
 	BasePath:         "/api",
-	Schemes:          []string{},
+	Schemes:          []string{"http"},
 	Title:            "Vidlearn API",
 	Description:      "Vidlearn API Documentation.",
 	InfoInstanceName: "swagger",
