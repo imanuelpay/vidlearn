@@ -29,17 +29,3 @@ jobs:
 
     - name: Test
       run: go test -v ./...
-    
-    - name: Pull Deploy
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.KEY }}
-        port: ${{ secrets.PORT }}
-        script: |
-          whoami
-          cd vidlearn/
-          ls -l
-          sudo git pull origin main
-          sudo docker-compose down && docker-compose up --build -d
