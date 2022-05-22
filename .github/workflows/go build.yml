@@ -40,5 +40,6 @@ jobs:
         script: |
           whoami
           cd vidlearn
+          ls -l
           sudo git pull origin main
           sudo docker-compose down && docker-compose up --build -d
