@@ -69,7 +69,7 @@ func (service *userService) VerifyEmail(verifyCode string) (user *User, err erro
 	}
 
 	user.VerifiedAt = time.Now()
-	user.VerifyCode = " "
+	user.VerifyCode = ""
 
 	return service.repository.UpdateUser(user, user.ID)
 }
@@ -131,7 +131,7 @@ func (service *userService) ResetPassword(upsertUserResetPasswordSpec *spec.Upse
 		return nil, err
 	}
 
-	if user.IsReset == 99 {
+	if user.IsReset == 1 {
 		return nil, errors.New("User is not reset")
 	}
 
@@ -141,8 +141,8 @@ func (service *userService) ResetPassword(upsertUserResetPasswordSpec *spec.Upse
 	}
 
 	user.Password = passwordHash
-	user.VerifyCode = " "
-	user.IsReset = 99
+	user.VerifyCode = ""
+	user.IsReset = 1
 	user.UpdatedAt = time.Now()
 
 	userData, err := service.repository.UpdateUser(user, user.ID)
@@ -259,31 +259,31 @@ func (service *userService) UpdateUser(upsertUserSpec *spec.UpsertUserUpdateSpec
 		return nil, err
 	}
 
-	// verifyCode := userCurrent.VerifyCode
-	// VerifiedAt := userCurrent.VerifiedAt
-	// if upsertUserSpec.Email != userCurrent.Email {
-	// 	verifyCode = util.RandomString(64)
-	// 	VerifiedAt = time.Time{}
+	verifyCode := userCurrent.VerifyCode
+	VerifiedAt := userCurrent.VerifiedAt
+	if upsertUserSpec.Email != userCurrent.Email {
+		verifyCode = util.RandomString(64)
+		VerifiedAt = time.Time{}
 
-	// 	To := upsertUserSpec.Email
-	// 	Subject := "Verify your email"
-	// 	Body := "Verify your email by clicking this link: " + service.config.App.URL + "/api/v1/verify/" + verifyCode
-	// 	From := service.config.Mail.Username
+		To := upsertUserSpec.Email
+		Subject := "Verify your email"
+		Body := "Verify your email by clicking this link: " + service.config.App.URL + "/api/v1/verify/" + verifyCode
+		From := service.config.Mail.Username
 
-	// 	mailData := mail.NewMail(
-	// 		From,
-	// 		To,
-	// 		Subject,
-	// 		Body,
-	// 		"verify",
-	// 	)
+		mailData := mail.NewMail(
+			From,
+			To,
+			Subject,
+			Body,
+			"verify",
+		)
 
-	// 	mailService := mail.CreateService(service.config)
-	// 	_, err = mailService.SendMail(mailData)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-	// }
+		mailService := mail.CreateService(service.config)
+		_, err = mailService.SendMail(mailData)
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	user := userCurrent.ModifyUser(
 		upsertUserSpec.Name,
@@ -292,20 +292,20 @@ func (service *userService) UpdateUser(upsertUserSpec *spec.UpsertUserUpdateSpec
 		time.Now(),
 	)
 
-	// userData := &User{
-	// 	ID:         user.ID,
-	// 	Name:       user.Name,
-	// 	Email:      user.Email,
-	// 	Password:   user.Password,
-	// 	Role:       user.Role,
-	// 	IsReset:    user.IsReset,
-	// 	VerifyCode: verifyCode,
-	// 	VerifiedAt: VerifiedAt,
-	// 	CreatedAt:  user.CreatedAt,
-	// 	UpdatedAt:  user.UpdatedAt,
-	// }
+	userData := &User{
+		ID:         user.ID,
+		Name:       user.Name,
+		Email:      user.Email,
+		Password:   user.Password,
+		Role:       user.Role,
+		IsReset:    user.IsReset,
+		VerifyCode: verifyCode,
+		VerifiedAt: VerifiedAt,
+		CreatedAt:  user.CreatedAt,
+		UpdatedAt:  user.UpdatedAt,
+	}
 
-	return service.repository.UpdateUser(user, IDCurrent)
+	return service.repository.UpdateUser(userData, IDCurrent)
 }
 
 func (service *userService) UpdateUserPassword(upsertUserSpec *spec.UpsertUserPasswordUpdateSpec, IDCurrent int) (*User, error) {

@@ -70,7 +70,20 @@ func (repository *MySQLRepository) CreateUser(user *user.User) (*user.User, erro
 }
 
 func (repository *MySQLRepository) UpdateUser(userCurrent *user.User, IDCurrent int) (*user.User, error) {
-	err := repository.db.Model(&userCurrent).Where("id=?", IDCurrent).Updates(userCurrent).Error
+	updateUser := map[string]interface{}{
+		"ID":         IDCurrent,
+		"Name":       userCurrent.Name,
+		"Email":      userCurrent.Email,
+		"Password":   userCurrent.Password,
+		"Role":       userCurrent.Role,
+		"IsReset":    userCurrent.IsReset,
+		"VerifyCode": userCurrent.VerifyCode,
+		"VerifiedAt": userCurrent.VerifiedAt,
+		"CreatedAt":  userCurrent.CreatedAt,
+		"UpdatedAt":  userCurrent.UpdatedAt,
+	}
+
+	err := repository.db.Model(&userCurrent).Where("id=?", IDCurrent).Updates(updateUser).Error
 	if err != nil {
 		return nil, err
 	}
