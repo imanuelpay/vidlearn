@@ -11,6 +11,7 @@ jobs:
     - name: pull-test-deploy
       uses: appleboy/ssh-action@master
       with:
+        repo-token: ${{ secrets.TOKEN }}
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.KEY }}
